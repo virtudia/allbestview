@@ -56,7 +56,7 @@
         s = d.createElement('script'),
         q = '#disqus_thread {font-family:' + getQueryVariable('fontBodyFamily') + '} a {color:#' + getQueryVariable('fontLinkColor') + '}';
         generateCss(q);
-    s.src = '//' + getQueryVariable('allbestview') + '.disqus.com/embed.js';
+    s.src = '//' + getQueryVariable('shortname') + '.disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
   })();
