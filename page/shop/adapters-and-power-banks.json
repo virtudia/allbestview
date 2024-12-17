@@ -3,26 +3,26 @@
   {
    "title": "#",
    "url": "#",
-   "imageUrl": "#",
-   "price": "#",
+   "imageUrl": "https://m.media-amazon.com/images/I/41TMrbN2lLS.jpg",
+   "price": "$22.99",
    "action": "Buy Now"
   },{
    "title": "#",
    "url": "#",
-   "imageUrl": "#",
-   "price": "#",
+   "imageUrl": "https://m.media-amazon.com/images/I/315+1C4IDoL.jpg",
+   "price": "$16.99",
    "action": "Buy Now"
   },{
    "title": "#",
    "url": "#",
-   "imageUrl": "#",
-   "price": "#",
+   "imageUrl": "https://m.media-amazon.com/images/I/310EMmJhHUL.jpg",
+   "price": "$29.99",
    "action": "Buy Now"
   },{
    "title": "#",
    "url": "#",
-   "imageUrl": "#",
-   "price": "#",
+   "imageUrl": "https://m.media-amazon.com/images/I/41itSx9gg4L.jpg",
+   "price": "$29.99",
    "action": "Buy Now"
   }
  ]
