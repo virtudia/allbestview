@@ -1,0 +1,29 @@
+{
+ "items": [
+  {
+   "title": "#",
+   "url": "#",
+   "imageUrl": "#",
+   "price": "#",
+   "action": "Buy Now"
+  },{
+   "title": "#",
+   "url": "#",
+   "imageUrl": "#",
+   "price": "#",
+   "action": "Buy Now"
+  },{
+   "title": "#",
+   "url": "#",
+   "imageUrl": "#",
+   "price": "#",
+   "action": "Buy Now"
+  },{
+   "title": "#",
+   "url": "#",
+   "imageUrl": "#",
+   "price": "#",
+   "action": "Buy Now"
+  }
+ ]
+}
