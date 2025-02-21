@@ -1,4 +1,4 @@
-(function() { // DON'T EDIT BELOW THIS LINE
+(function() { 
     var d = document, s = d.createElement('script');
     s.src = 'https://allbestview.disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
