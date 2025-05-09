@@ -81,22 +81,12 @@ function saveConsentChoices(choices) {
     console.debug('Pilihan consent diterapkan:', choices);
   }
 
-
 function syncConsentFromCookie() {
   const bannerSuffix = window.aCBm?.cookieBanner?.getBannerSuffix() || '';
-  const cookieKey = `cookie_consent${bannerSuffix}`;
-  const cookieConsent = localStorage.getItem(cookieKey);
-
-  try {
-    // Cek apakah nilai adalah string "undefined" (bukan tipe undefined)
-    if (cookieConsent === null || cookieConsent === 'undefined') {
-      throw new SyntaxError(`"${cookieConsent}" is not valid JSON`);
-    }
-
-    const consent = JSON.parse(cookieConsent);
-
-    // Validasi jika hasil parse adalah objek
-    if (typeof consent === 'object' && consent !== null) {
+  const cookieConsent = localStorage.getItem(`cookie_consent${bannerSuffix}`);
+  if (cookieConsent) {
+    try {
+      const consent = JSON.parse(cookieConsent);
       localStorage.setItem(`bestviewcc_necessary${bannerSuffix}`, 'true');
       localStorage.setItem(`bestviewcc_analytical${bannerSuffix}`, consent.analytical ? 'true' : 'false');
       localStorage.setItem(`bestviewcc_advertising${bannerSuffix}`, consent.advertising ? 'true' : 'false');
@@ -109,38 +99,11 @@ function syncConsentFromCookie() {
         consent_advertising: consent.advertising === true
       });
       console.debug('Consent disinkronkan dari localStorage:', consent);
-    } else {
-      throw new SyntaxError('Parsed cookie_consent is not a valid object');
+    } catch (error) {
+      console.error('Error parsing cookie_consent:', error);
     }
-  } catch (error) {
-    console.error('Error parsing cookie_consent:', error);
-    initializeDefaultConsent(bannerSuffix);
   }
 }
-
-function initializeDefaultConsent(suffix = '') {
-  const defaultConsent = {
-    necessary: true,
-    analytical: false,
-    advertising: false
-  };
-
-  localStorage.setItem(`bestviewcc_necessary${suffix}`, 'true');
-  localStorage.setItem(`bestviewcc_analytical${suffix}`, 'false');
-  localStorage.setItem(`bestviewcc_advertising${suffix}`, 'false');
-  updateConsentMode(defaultConsent);
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: 'default_consent_initialized',
-    consent_necessary: true,
-    consent_analytical: false,
-    consent_advertising: false
-  });
-  console.debug('Consent diinisialisasi dengan nilai default:', defaultConsent);
-}
-
-
-
 
   // Dengarkan event consent_updated dan consent_given
   document.addEventListener('consent_updated', (e) => {
