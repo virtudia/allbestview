@@ -47,8 +47,8 @@
         return response.json();
       })
       .then(function(data) {
-        // Simpan data langsung, bukan data.consents
-        const consentData = data || {
+        // Validasi data sebelum menyimpan
+        const consentData = (data && typeof data === 'object' && 'necessary' in data) ? data : {
           necessary: true,
           analytical: false,
           advertising: false
@@ -59,11 +59,13 @@
       .catch(function(error) {
         console.error('Error mengirim consent ke server:', error);
         // Simpan default jika gagal
-        localStorage.setItem('cookie_consent' + bannerSuffix, JSON.stringify({
+        const defaultConsent = {
           necessary: true,
           analytical: false,
           advertising: false
-        }));
+        };
+        localStorage.setItem('cookie_consent' + bannerSuffix, JSON.stringify(defaultConsent));
+        console.debug('Menyimpan default consent ke localStorage:', defaultConsent);
       });
     window.dataLayer.push({
       event: 'consent_updated',
@@ -110,8 +112,20 @@
     const cookieConsent = localStorage.getItem(`cookie_consent${bannerSuffix}`);
     if (cookieConsent) {
       try {
-        consent = JSON.parse(cookieConsent);
-        console.debug('Consent disinkronkan dari localStorage:', consent);
+        // Periksa apakah nilai adalah string "undefined"
+        if (cookieConsent === "undefined" || cookieConsent === "") {
+          console.debug('cookie_consent adalah "undefined" atau kosong di localStorage, menggunakan default');
+          consent = {
+            necessary: true,
+            analytical: false,
+            advertising: false
+          };
+          // Bersihkan nilai tidak valid dari localStorage
+          localStorage.removeItem(`cookie_consent${bannerSuffix}`);
+        } else {
+          consent = JSON.parse(cookieConsent);
+          console.debug('Consent disinkronkan dari localStorage:', consent);
+        }
       } catch (error) {
         console.error('Error parsing cookie_consent dari localStorage:', error);
         // Reset ke default jika parsing gagal
@@ -120,6 +134,8 @@
           analytical: false,
           advertising: false
         };
+        // Bersihkan nilai tidak valid dari localStorage
+        localStorage.removeItem(`cookie_consent${bannerSuffix}`);
       }
     } else {
       console.debug('Tidak ada cookie_consent di localStorage, mencoba dari document.cookie');
@@ -127,18 +143,44 @@
       const cookieValue = getCookie('cookie_consent');
       if (cookieValue) {
         try {
-          consent = JSON.parse(cookieValue);
-          console.debug('Consent disinkronkan dari document.cookie:', consent);
-          // Simpan ke localStorage
-          localStorage.setItem(`cookie_consent${bannerSuffix}`, JSON.stringify(consent));
+          // Periksa apakah cookie adalah "undefined"
+          if (cookieValue === "undefined" || cookieValue === "") {
+            console.debug('cookie_consent adalah "undefined" atau kosong di document.cookie, menggunakan default');
+            consent = {
+              necessary: true,
+              analytical: false,
+              advertising: false
+            };
+          } else {
+            consent = JSON.parse(cookieValue);
+            console.debug('Consent disinkronkan dari document.cookie:', consent);
+            // Simpan ke localStorage
+            localStorage.setItem(`cookie_consent${bannerSuffix}`, JSON.stringify(consent));
+          }
         } catch (error) {
           console.error('Error parsing cookie_consent dari document.cookie:', error);
+          consent = {
+            necessary: true,
+            analytical: false,
+            advertising: false
+          };
         }
       } else {
         console.debug('Tidak ada cookie_consent di document.cookie, menggunakan default');
         // Set default ke localStorage
         localStorage.setItem(`cookie_consent${bannerSuffix}`, JSON.stringify(consent));
       }
+    }
+
+    // Validasi consent untuk memastikan struktur yang benar
+    if (!consent || typeof consent !== 'object' || !('necessary' in consent)) {
+      console.debug('Consent tidak valid, menggunakan default');
+      consent = {
+        necessary: true,
+        analytical: false,
+        advertising: false
+      };
+      localStorage.setItem(`cookie_consent${bannerSuffix}`, JSON.stringify(consent));
     }
 
     // Simpan ke localStorage untuk bestviewcc_*
